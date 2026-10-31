@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="시작일과 기간으로 달력 및 근무일 기준 마감일을 한 번에 계산하세요.">
+<title>기한노트 | 업무 기한 계산기</title>
+<style>
+:root{font-family:Arial,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#202e29;background:#f4f6f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}header{max-width:1120px;margin:auto;padding:28px 24px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:21px;font-weight:800;letter-spacing:-1px}.mark{display:inline-grid;place-items:center;background:#286b50;color:white;width:34px;height:34px;border-radius:10px;margin-right:9px}.tag{font-size:12px;color:#627168}main{max-width:1080px;margin:40px auto 0;padding:0 24px}.eyebrow{color:#367558;font-size:12px;font-weight:700;letter-spacing:2px}h1{font-size:clamp(32px,5vw,48px);line-height:1.25;letter-spacing:-2px;margin:15px 0}h1 span{color:#2a7455}.intro{color:#69776e;line-height:1.8;margin-bottom:35px}.layout{display:grid;grid-template-columns:370px 1fr;gap:24px}.panel{background:white;border:1px solid #e0e6dd;border-radius:22px;padding:28px}h2{font-size:18px;margin:0 0 25px;letter-spacing:-.5px}.step{display:inline-grid;place-items:center;background:#eef3ed;color:#3d7158;font-size:11px;width:24px;height:24px;border-radius:8px;margin-right:8px}label{display:block;font-size:13px;font-weight:700;margin:22px 0 10px}input[type=date],input[type=number]{width:100%;border:1px solid #dce3da;padding:14px;border-radius:10px;background:#fcfdfb;color:#273c30;min-width:0}input:focus{outline:2px solid #78a68a;outline-offset:2px}.presets{display:flex;gap:7px;margin-top:10px}.presets button{background:white;border:1px solid #dce3da;border-radius:7px;color:#637367;font-size:12px;padding:7px 13px}.presets button:hover{background:#eff5ed}.primary{border:0;border-radius:11px;background:#286b50;color:#fff;padding:16px;width:100%;font-weight:700;margin-top:26px}.primary:hover{background:#20573f}.hint{font-size:12px;color:#7c877d;line-height:1.7}.results{display:grid;gap:18px}.result{border:1px solid #dfe6dc;border-radius:22px;padding:27px 30px;background:#fff}.result.work{background:#eaf1e4;border-color:#d8e3cd}.result-top{display:flex;justify-content:space-between;align-items:center}.kind{font-size:13px;font-weight:700}.badge{font-size:12px;padding:7px 10px;background:#f0f3ee;border-radius:7px;color:#647265}.work .badge{color:#356444;background:#dce9d3}.date{font-size:clamp(27px,4vw,36px);font-weight:800;letter-spacing:-1.4px;margin:21px 0 8px}.detail{font-size:13px;color:#6c786b}.footnote{border-top:1px solid #d7e1ce;margin-top:23px;padding-top:15px;font-size:12px;line-height:1.6;color:#5e7255}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:0 5px;color:#72816f;font-size:12px}.copy{padding:10px 16px;border:1px solid #d8e0d4;background:white;border-radius:9px;color:#375d44}.guide{margin:26px 0;background:#eef1eb;padding:20px 24px;border-radius:14px;color:#697668;font-size:12px;line-height:1.9}.guide strong{color:#40513e}footer{max-width:1080px;margin:32px auto;padding:20px 24px;border-top:1px solid #dfe5da;color:#879080;font-size:11px;display:flex;justify-content:space-between}.error{color:#b43d32;font-size:13px;margin:14px 0 0}.empty{color:#778171} @media(max-width:760px){header{padding:22px}.tag{display:none}main{margin-top:20px}.layout{grid-template-columns:1fr}.panel,.result{padding:24px}.toolbar{flex-wrap:wrap}footer{gap:10px;flex-wrap:wrap}}@media(prefers-reduced-motion:no-preference){button{transition:background .18s}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span class="mark" aria-hidden="true">▤</span>기한노트</div><span class="tag">일정은 정확하게, 업무는 여유롭게.</span></header>
+<main><div class="eyebrow">WORKDAY CALCULATOR</div><h1>마감일 계산,<br><span>이제 한 번에.</span></h1><p class="intro">시작일과 기간만 입력하세요.<br>달력 기준과 주말을 제외한 업무 마감일을 나란히 알려드려요.</p>
+<div class="layout"><section class="panel"><h2><span class="step">01</span>일정 입력</h2><form id="form"><label for="start">시작일</label><input type="date" id="start" required min="1900-01-01" max="9990-12-31"><label for="days">기간 (일)</label><input type="number" id="days" value="7" min="1" max="3650" step="1" required><div class="presets" aria-label="기간 빠른 선택"><button type="button" data-days="3">3일</button><button type="button" data-days="7">7일</button><button type="button" data-days="14">14일</button><button type="button" data-days="30">30일</button></div><button class="primary" type="submit">마감일 계산하기 <span aria-hidden="true">→</span></button><p id="error" class="error" role="alert"></p><p class="hint">시작일은 제외하고 다음 날부터 계산합니다.<br>기간은 1~3,650일 사이로 입력해 주세요.</p></form></section>
+<section class="results" aria-label="계산 결과" aria-live="polite"><article class="result"><div class="result-top"><span class="kind">달력 기준 마감일</span><span class="badge" id="calendar-dday"></span></div><div class="date" id="calendar-date">—</div><div class="detail" id="calendar-detail">주말을 포함한 전체 날짜 기준</div></article><article class="result work"><div class="result-top"><span class="kind">근무일 기준 마감일</span><span class="badge" id="work-dday"></span></div><div class="date" id="work-date">—</div><div class="detail" id="work-detail">토요일과 일요일을 제외한 날짜 기준</div><div class="footnote" id="difference">공휴일은 제외하지 않습니다.</div></article><div class="toolbar"><span id="status">입력한 일정의 계산 결과입니다.</span><button type="button" class="copy" id="copy">결과 복사 ↗</button></div></section></div>
+<aside class="guide"><strong>계산 기준 안내</strong><br>예: 금요일부터 1일이면 달력 기준은 토요일, 근무일 기준은 월요일입니다.<br>근무일은 월~금요일이며 공휴일·대체공휴일은 별도로 반영하지 않습니다. D-day는 현재 기기의 오늘 날짜를 기준으로 표시합니다.</aside></main>
+<footer><span>기한노트 · 업무 기한 계산기</span><span>AI 리더스 아카데미 | 바이브코딩 프로젝트</span></footer>
+<script>const DAY = 86400000;
+function parseDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error('시작일을 확인해 주세요.');
+  const [y,m,d] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(y,m-1,d));
+  if (y < 1900 || y > 9990 || date.getUTCMonth() !== m-1 || date.getUTCDate() !== d) throw new Error('유효한 시작일을 입력해 주세요.');
+  return date;
+}
+function calculate(value, days) {
+  const start = parseDate(value);
+  if (!Number.isInteger(days) || days < 1 || days > 3650) throw new Error('기간은 1~3,650 사이의 정수로 입력해 주세요.');
+  const calendar = new Date(+start + days * DAY);
+  const work = new Date(+start);
+  let remaining = days;
+  while (remaining) { work.setUTCDate(work.getUTCDate()+1); if (![0,6].includes(work.getUTCDay())) remaining--; }
+  return {calendar,work};
+}
+if (typeof module !== 'undefined') module.exports = {parseDate,calculate};
+if (typeof document !== 'undefined') {
+  const $ = id => document.getElementById(id);
+  const todayValue = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+  const format = d => `${d.getUTCFullYear()}. ${String(d.getUTCMonth()+1).padStart(2,'0')}. ${String(d.getUTCDate()).padStart(2,'0')} (${['일','월','화','수','목','금','토'][d.getUTCDay()]})`;
+  const dday = d => { const n = Math.round((d-parseDate(todayValue()))/DAY); return n===0 ? 'D-DAY' : n>0 ? `D-${n}` : `D+${-n}`; };
+  let resultText = '';
+  $('start').value = todayValue();
+  function render() {
+    try {
+      const n = Number($('days').value);
+      const r = calculate($('start').value,n);
+      $('error').textContent = '';
+      $('calendar-date').textContent = format(r.calendar);
+      $('work-date').textContent = format(r.work);
+      $('calendar-dday').textContent = dday(r.calendar);
+      $('work-dday').textContent = dday(r.work);
+      $('calendar-detail').textContent = `시작일 다음 날부터 ${n}일 · 주말 포함`;
+      $('work-detail').textContent = `시작일 다음 날부터 ${n}근무일 · 토·일 제외`;
+      $('difference').textContent = `달력 기준보다 ${Math.round((r.work-r.calendar)/DAY)}일 뒤입니다. 공휴일은 제외하지 않습니다.`;
+      $('status').textContent = `${$('start').value} 시작 · ${n}일 기준`;
+      $('copy').disabled = false;
+      $('copy').textContent = '결과 복사 ↗';
+      resultText = `업무 기한 계산 결과\n시작일: ${$('start').value}\n기간: ${n}일 (시작일 제외)\n달력 기준: ${format(r.calendar)} / ${dday(r.calendar)}\n근무일 기준: ${format(r.work)} / ${dday(r.work)}\n근무일 기준은 토·일 제외, 공휴일 포함입니다.`;
+    } catch(e) { $('error').textContent = e.message; $('copy').disabled = true; }
+  }
+  $('form').addEventListener('submit', e => {e.preventDefault();render();});
+  for (const id of ['start','days']) $(id).addEventListener('input', () => { $('status').textContent='입력 변경됨 · 계산하기를 눌러 주세요.'; $('copy').disabled=true; });
+  document.querySelectorAll('[data-days]').forEach(b => b.addEventListener('click', () => { $('days').value=b.dataset.days;render(); }));
+  $('copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(resultText); $('copy').textContent='복사 완료 ✓'; }
+    catch { $('error').textContent='자동 복사를 사용할 수 없습니다. 아래 결과를 선택해 복사해 주세요.'; let box=$('copy-fallback'); if(!box){box=document.createElement('textarea');box.id='copy-fallback';box.setAttribute('aria-label','복사할 계산 결과');box.style.cssText='width:100%;min-height:160px;margin-top:16px';$('form').appendChild(box);}box.value=resultText;box.focus();box.select(); }
+  });
+  render();
+}
+</script>
+</body></html>
